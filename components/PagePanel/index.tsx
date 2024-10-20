@@ -43,7 +43,7 @@ const PagePanel = (p: Props) => {
       {
         // * Cards
       }
-      <div className="px-8 py-8 flex flex-wrap justify-center">
+      <div className="px-8 py-8 flex flex-wrap justify-center gap-6">
         {tickets &&
           tickets.map((ticket, i) => {
             return <TicketCard key={ticket._id} ticket={ticket} index={i} />;
