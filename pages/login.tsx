@@ -1,8 +1,7 @@
 import PageLogin from "@/components/PageLogin";
 
 const LoginPage = () => {
-  // prettier-ignore
-  return <PageLogin />
+  return <PageLogin />;
 };
 
 export default LoginPage;

@@ -5,12 +5,20 @@ import {
   useEffect,
   useState,
 } from "react";
-import { apiAuthorized, apiAuthorizedKey } from "../apiRoutes";
+import {
+  apiAllTickets,
+  apiAllTicketsKey,
+  apiAuthorized,
+  apiAuthorizedKey,
+} from "../apiRoutes";
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
+import { ModelTicket } from "@/types/apiTypes";
 
 type _AppContextProps = {
   authedIn: boolean | null;
+  tickets: ModelTicket[] | undefined;
+  refetchTicket: () => void;
 };
 
 export const _AppContext = createContext({} as _AppContextProps);
@@ -23,6 +31,7 @@ export const ProviderApp = (p: Props) => {
   const router = useRouter();
 
   const [authedIn, setAuthedIn] = useState<boolean | null>(null);
+  const [tickets, setTickets] = useState<ModelTicket[] | undefined>(undefined);
 
   const {
     data: authData,
@@ -33,7 +42,18 @@ export const ProviderApp = (p: Props) => {
     queryFn: () => apiAuthorized(),
   });
 
-  useEffect(() => {
+  const {
+    data: ticketData,
+    error: ticketError,
+    isLoading: isTicketLoading,
+    refetch: refetchTicket,
+  } = useQuery({
+    queryKey: [apiAllTicketsKey],
+    queryFn: () => apiAllTickets(),
+    retry: 0,
+  });
+
+  const decideShowingPage = () => {
     if (!isAuthLoading) {
       if (authData) {
         setAuthedIn(true);
@@ -43,12 +63,22 @@ export const ProviderApp = (p: Props) => {
         !router.asPath.startsWith("/login") && router.push("/login");
       }
     }
+  };
+
+  useEffect(() => {
+    decideShowingPage();
   }, [isAuthLoading]);
+
+  useEffect(() => {
+    ticketData && setTickets(ticketData);
+  }, [ticketData]);
 
   return (
     <_AppContext.Provider
       value={{
         authedIn,
+        tickets,
+        refetchTicket,
       }}
     >
       {p.children}

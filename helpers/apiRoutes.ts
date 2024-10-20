@@ -1,4 +1,4 @@
-import { ModelUser } from "@/types/apiTypes";
+import { ModelTicket, ModelUser } from "@/types/apiTypes";
 import axios from "axios";
 
 const api = axios.create({
@@ -63,14 +63,14 @@ export const apiCapchaVerification = async (code: string) => {
   }
 };
 
-export const apiNewTicketKey = "ticket";
+export const apiNewTicketKey = "new-ticket";
 export const apiNewTicket = async (
   department_id: string,
   subject: string,
   content: string
 ) => {
   try {
-    const res = await api.post<ModelUser>("ticket", {
+    const res = await api.post("ticket", {
       department_id,
       subject,
       content,
@@ -78,6 +78,21 @@ export const apiNewTicket = async (
     return res;
   } catch (e) {
     console.error(e);
+    throw e;
+  }
+};
+
+export const apiAllTicketsKey = "all-tickets";
+export const apiAllTickets = async (): Promise<ModelTicket[] | undefined> => {
+  try {
+    const res = await api.get("ticket", {
+      data: {
+        page: 1,
+      },
+    });
+    return res.data?.data;
+  } catch (e: any) {
+    console.error(e?.response ?? e);
     throw e;
   }
 };
