@@ -2,6 +2,7 @@ import { useAppContext } from "@/helpers/_AppContext";
 import { useEffect, useState } from "react";
 import Button from "../_shared/Button";
 import TicketCard from "./TicketCard";
+import ModalNewTicket from "../ModalNewTicket";
 
 type Props = {};
 
@@ -9,6 +10,7 @@ const PagePanel = (p: Props) => {
   const { tickets, refetchTicket, logout, authedIn } = useAppContext();
 
   const [show, setShow] = useState(false);
+  const [showNewModal, setShowNewModal] = useState(false);
 
   useEffect(() => {
     refetchTicket();
@@ -30,8 +32,10 @@ const PagePanel = (p: Props) => {
       }
       <div className="flex items-center gap-2 px-4">
         <p className="text-3xl flex-1">پنل تیکت ها</p>
-        <Button className="min-w-32">تیکت جدید</Button>
-        <Button onClick={logout} className="min-w-32">
+        <Button className="min-w-32" onClick={() => setShowNewModal(true)}>
+          تیکت جدید
+        </Button>
+        <Button className="min-w-32" onClick={logout}>
           خروج از جساب
         </Button>
       </div>
@@ -45,6 +49,8 @@ const PagePanel = (p: Props) => {
             return <TicketCard key={ticket._id} ticket={ticket} index={i} />;
           })}
       </div>
+
+      {showNewModal && <ModalNewTicket pop={() => setShowNewModal(false)} />}
     </div>
   );
 };

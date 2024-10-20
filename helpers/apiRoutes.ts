@@ -65,13 +65,13 @@ export const apiCapchaVerification = async (code: string) => {
 
 export const apiNewTicketKey = "new-ticket";
 export const apiNewTicket = async (
-  department_id: string,
+  // department_id: string,
   subject: string,
   content: string
 ) => {
   try {
     const res = await api.post("ticket", {
-      department_id,
+      department_id: "60affd86b04e951f303e437b",
       subject,
       content,
     });
