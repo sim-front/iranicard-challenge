@@ -10,6 +10,8 @@ import {
   apiAllTicketsKey,
   apiAuthorized,
   apiAuthorizedKey,
+  apiLogout,
+  apiLogoutKey,
 } from "../apiRoutes";
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +21,7 @@ type _AppContextProps = {
   authedIn: boolean | null;
   tickets: ModelTicket[] | undefined;
   refetchTicket: () => void;
+  logout: () => void;
 };
 
 export const _AppContext = createContext({} as _AppContextProps);
@@ -53,6 +56,17 @@ export const ProviderApp = (p: Props) => {
     retry: 0,
   });
 
+  const {
+    data: logoutData,
+    error: logoutError,
+    isLoading: isLogoutLoading,
+    refetch: refetchLogout,
+  } = useQuery({
+    queryKey: [apiLogoutKey],
+    queryFn: () => apiLogout(),
+    retry: 0,
+  });
+
   const decideShowingPage = () => {
     if (!isAuthLoading) {
       if (authData) {
@@ -65,10 +79,19 @@ export const ProviderApp = (p: Props) => {
     }
   };
 
+  const logout = async () => {
+    await refetchLogout()
+      // TODO handle possible errors
+      .finally(() => {
+        router.push("/login");
+      });
+  };
+
   useEffect(() => {
     decideShowingPage();
-  }, [isAuthLoading]);
+  }, [authData]);
 
+  console.log(11111, "AUTH", isAuthLoading);
   useEffect(() => {
     ticketData && setTickets(ticketData);
   }, [ticketData]);
@@ -79,6 +102,7 @@ export const ProviderApp = (p: Props) => {
         authedIn,
         tickets,
         refetchTicket,
+        logout,
       }}
     >
       {p.children}
