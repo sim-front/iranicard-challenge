@@ -1,3 +1,4 @@
+import { useAppContext } from "@/helpers/_AppContext";
 import {
   apiCapchaVerification,
   apiCapchaVerificationKey,
@@ -15,6 +16,7 @@ const SHOW_DURATION = 2000;
 const HIDE_DURATION = 700;
 
 const PageLogin = () => {
+  const { authedIn } = useAppContext();
   const router = useRouter();
 
   const [show, setShow] = useState(false);
@@ -78,12 +80,16 @@ const PageLogin = () => {
   };
 
   useEffect(() => {
-    setShow(true);
-
     return () => {
       clearTimeout(refTimeoutMoveToPanel.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (authedIn !== null) {
+      setShow(true);
+    }
+  }, [authedIn]);
 
   return (
     <div className="w-full h-screen flex ">
@@ -127,6 +133,7 @@ const PageLogin = () => {
               <input
                 className="w-full h-10 rounded bg-slate-800 px-2 text-center border border-slate-600"
                 placeholder="شماره موبال خود را وارد کنید"
+                type="number"
                 value={valPhone}
                 onChange={(e) => setValPhone(e.target.value)}
               />
@@ -145,6 +152,7 @@ const PageLogin = () => {
               <input
                 className="w-full h-10 rounded bg-slate-800 px-2 text-center border border-slate-600 "
                 placeholder="رمز عبور را اینجا وارد کنید"
+                type="password"
                 value={valPass}
                 onChange={(e) => setValPass(e.target.value)}
               />

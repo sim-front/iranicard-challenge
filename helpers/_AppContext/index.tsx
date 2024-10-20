@@ -40,6 +40,7 @@ export const ProviderApp = (p: Props) => {
     data: authData,
     error: authError,
     isLoading: isAuthLoading,
+    refetch: refetchAuth,
   } = useQuery({
     queryKey: [apiAuthorizedKey],
     queryFn: () => apiAuthorized(),
@@ -67,31 +68,29 @@ export const ProviderApp = (p: Props) => {
     retry: 0,
   });
 
-  const decideShowingPage = () => {
-    if (!isAuthLoading) {
-      if (authData) {
-        setAuthedIn(true);
-        !router.asPath.startsWith("/panel") && router.push("/panel");
-      } else {
-        setAuthedIn(false);
-        !router.asPath.startsWith("/login") && router.push("/login");
-      }
+  const decideShowingPage = (data: any) => {
+    if (data) {
+      setAuthedIn(true);
+      !router.asPath.startsWith("/panel") && router.push("/panel");
+    } else {
+      setAuthedIn(false);
+      !router.asPath.startsWith("/login") && router.push("/login");
     }
   };
 
   const logout = async () => {
     await refetchLogout()
       // TODO handle possible errors
-      .finally(() => {
+      .then((res) => {
+        console.log(11111, "LOGOUT", res);
         router.push("/login");
       });
   };
 
   useEffect(() => {
-    decideShowingPage();
-  }, [authData]);
+    decideShowingPage(authData);
+  }, [isAuthLoading]);
 
-  console.log(11111, "AUTH", isAuthLoading);
   useEffect(() => {
     ticketData && setTickets(ticketData);
   }, [ticketData]);

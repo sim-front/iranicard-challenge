@@ -45,8 +45,6 @@ export const apiLogout = async () => {
   try {
     const res = await api.post("/logout");
 
-    console.log(11111, "LOGOUT", res);
-
     return res;
   } catch (e: any) {
     const err = e?.response?.data;
