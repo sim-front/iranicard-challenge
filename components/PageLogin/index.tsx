@@ -37,7 +37,7 @@ const PageLogin = () => {
   } = useQuery({
     queryKey: [apiLoginKey],
     queryFn: () => apiLogin(valPhone, valPass),
-    retry: 0,
+    enabled: false,
   });
 
   const {
@@ -48,7 +48,7 @@ const PageLogin = () => {
   } = useQuery({
     queryKey: [apiCapchaVerificationKey],
     queryFn: () => apiCapchaVerification(valCapcha),
-    retry: 0,
+    enabled: false,
   });
 
   const moveToPanel = () => {
@@ -102,7 +102,7 @@ const PageLogin = () => {
           ${show ? "opacity-100" : "opacity-0 translate-y-20"}`}
           style={{
             transition: `opacity ${duration * 0.6}ms ease, 
-            transform ${duration * 0.5}ms ease ${duration * 0.6}ms`,
+            transform ${duration * 0.3}ms ease ${duration * 0.6}ms`,
           }}
         >
           خوش آمدید

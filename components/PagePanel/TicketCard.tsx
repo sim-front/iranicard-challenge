@@ -27,7 +27,7 @@ const TicketCard = (p: Props) => {
             transition ease duration-200
             ${show ? "opacity-100" : "opacity-0 translate-y-8"}`}
       style={{
-        transitionDelay: `${p.index * 50}ms`,
+        transitionDelay: `${300 + p.index * 50}ms`,
       }}
     >
       <p className="text-sm">{p.ticket.department}</p>

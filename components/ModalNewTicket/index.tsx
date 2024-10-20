@@ -17,7 +17,7 @@ const ModelNewTicket = (p: Props) => {
   const { refetch: refetchNewTicket } = useQuery({
     queryKey: [apiNewTicketKey],
     queryFn: () => apiNewTicket(valSubject, valContent),
-    retry: 0,
+    enabled: false,
   });
 
   const handleSubmit = async (e: FormEvent) => {

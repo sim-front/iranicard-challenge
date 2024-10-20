@@ -44,6 +44,7 @@ export const ProviderApp = (p: Props) => {
   } = useQuery({
     queryKey: [apiAuthorizedKey],
     queryFn: () => apiAuthorized(),
+    retry: 0,
   });
 
   const {
@@ -54,7 +55,7 @@ export const ProviderApp = (p: Props) => {
   } = useQuery({
     queryKey: [apiAllTicketsKey],
     queryFn: () => apiAllTickets(),
-    retry: 0,
+    enabled: false,
   });
 
   const {
@@ -65,7 +66,7 @@ export const ProviderApp = (p: Props) => {
   } = useQuery({
     queryKey: [apiLogoutKey],
     queryFn: () => apiLogout(),
-    retry: 0,
+    enabled: false,
   });
 
   const decideShowingPage = (data: any) => {
