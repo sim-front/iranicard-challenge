@@ -63,17 +63,39 @@ export const apiCapchaVerification = async (code: string) => {
   }
 };
 
+export const apiMediaKey = "media";
+export const apiMedia = async (image: File) => {
+  try {
+    const formData = new FormData();
+    formData.append("media[0]", image);
+    formData.append("access_type", "private");
+    formData.append("section_type", "ticket");
+
+    const res = await api.post("media", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
 export const apiNewTicketKey = "new-ticket";
 export const apiNewTicket = async (
   // department_id: string,
   subject: string,
-  content: string
+  content: string,
+  media_ids?: string
 ) => {
   try {
     const res = await api.post("ticket", {
       department_id: "60affd86b04e951f303e437b",
       subject,
       content,
+      media_ids: [media_ids],
     });
     return res;
   } catch (e) {

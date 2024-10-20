@@ -1,6 +1,11 @@
-import { apiNewTicket, apiNewTicketKey } from "@/helpers/apiRoutes";
+import {
+  apiMedia,
+  apiMediaKey,
+  apiNewTicket,
+  apiNewTicketKey,
+} from "@/helpers/apiRoutes";
 import { useQuery } from "@tanstack/react-query";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import Button from "../_shared/Button";
 import { useAppContext } from "@/helpers/_AppContext";
 
@@ -13,20 +18,51 @@ const ModelNewTicket = (p: Props) => {
 
   const [valSubject, setValSubject] = useState("");
   const [valContent, setValContent] = useState("");
+  const [valImage, setValImage] = useState<File | undefined>(undefined);
+  const [imgPreviewUrl, setImgPreviewUrl] = useState<string | undefined>();
+  const refImageId = useRef<string | undefined>();
 
-  const { refetch: refetchNewTicket } = useQuery({
-    queryKey: [apiNewTicketKey],
-    queryFn: () => apiNewTicket(valSubject, valContent),
+  const { refetch: refetchNewTicket, isLoading: isNewTicketLoading } = useQuery(
+    {
+      queryKey: [apiNewTicketKey],
+      queryFn: () => apiNewTicket(valSubject, valContent, refImageId.current),
+      enabled: false,
+    }
+  );
+
+  const { refetch: refetchNewMedia, isLoading: isNewMediaLoading } = useQuery({
+    queryKey: [apiMediaKey],
+    queryFn: () => apiMedia(valImage as File),
     enabled: false,
   });
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    refetchNewTicket().then(() => {
-      refetchTicket();
-      p.pop();
-    });
+
+    try {
+      if (valImage) {
+        await refetchNewMedia().then((res: any) => {
+          console.log(11111, res.data?.data?.data);
+          refImageId.current = res.data?.data?.data?.[0]?._id;
+        });
+
+        await refetchNewTicket().then(() => {
+          refetchTicket();
+          p.pop();
+        });
+      }
+    } catch (e: any) {
+      console.error(e);
+
+      // TODO improve error handling
+    }
   };
+
+  useEffect(() => {
+    if (valImage) {
+      setImgPreviewUrl(URL.createObjectURL(valImage));
+    }
+  }, [valImage]);
 
   return (
     <div
@@ -36,6 +72,15 @@ const ModelNewTicket = (p: Props) => {
       <div className="w-full max-w-sm mx-auto bg-slate-800 rounded-xl p-4 border border-solid border-slate-700">
         <form onSubmit={handleSubmit}>
           <p className={`text-2xl mb-12 text-center`}>تیکت جدید</p>
+
+          <input
+            className="mb-4"
+            accept="image/*"
+            type="file"
+            onChange={(e) => setValImage(e.target.files?.[0])}
+          />
+
+          <img className="w-full" src={imgPreviewUrl} />
 
           <p className="w-full mb-2">موضوع</p>
           <input
@@ -59,14 +104,16 @@ const ModelNewTicket = (p: Props) => {
               onClick={() => {
                 refetchNewTicket();
               }}
+              disabled={isNewTicketLoading || isNewMediaLoading}
             >
-              ثبت
+              {isNewTicketLoading || isNewMediaLoading ? "🤚" : " ثبت"}
             </Button>
             <Button
               className="min-w-32"
               onClick={() => {
                 p.pop();
               }}
+              disabled={isNewTicketLoading || isNewMediaLoading}
             >
               انصراف
             </Button>

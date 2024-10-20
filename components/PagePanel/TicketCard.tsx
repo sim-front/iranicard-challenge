@@ -27,7 +27,7 @@ const TicketCard = (p: Props) => {
             transition ease duration-200
             ${show ? "opacity-100" : "opacity-0 translate-y-8"}`}
       style={{
-        transitionDelay: `${300 + p.index * 50}ms`,
+        transitionDelay: `${500 + p.index * 50}ms`,
       }}
     >
       <p className="text-sm">{p.ticket.department}</p>
@@ -36,8 +36,6 @@ const TicketCard = (p: Props) => {
         <p className="text-green-500">{status}</p>
       </div>
       <p className="mt-8">{p.ticket.created_ago}</p>
-
-      <Button className="w-full">من را در 15 ثانیه خبر کن</Button>
     </div>
   );
 };
