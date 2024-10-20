@@ -67,7 +67,6 @@ const PageLogin = () => {
 
     if (loginState === "phone") {
       const r = await refetchLogin();
-      console.log(11111, r);
 
       if (r.error?.message) {
         setErrorMessages(r.error.message);
@@ -85,7 +84,6 @@ const PageLogin = () => {
       clearTimeout(refTimeoutMoveToPanel.current);
     };
   }, []);
-  console.log(11111, isLoginLoading);
 
   return (
     <div className="w-full h-screen flex ">

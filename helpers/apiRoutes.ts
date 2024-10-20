@@ -6,9 +6,10 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
-export const apiAuthorizedKey = "authed";
+export const apiAuthorizedKey = "authentication-status";
 export const apiAuthorized = async () => {
   try {
     const res = await api.get("/authentication-status", {
@@ -54,7 +55,8 @@ export const apiLogout = async () => {
 export const apiCapchaVerificationKey = "capcha";
 export const apiCapchaVerification = async (code: string) => {
   try {
-    // TODO
+    //
+    return "";
   } catch (e) {
     console.error(e);
     throw e;
@@ -73,7 +75,6 @@ export const apiNewTicket = async (
       subject,
       content,
     });
-    console.log(11111, res);
     return res;
   } catch (e) {
     console.error(e);
