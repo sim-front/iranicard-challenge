@@ -10,6 +10,11 @@ const api = axios.create({
 });
 
 export const apiAuthorizedKey = "authentication-status";
+/**
+ * Checks if user is logged in or not
+ *
+ * @returns Success if logged in, error if not
+ */
 export const apiAuthorized = async () => {
   try {
     const res = await api.get("/authentication-status", {
@@ -26,6 +31,13 @@ export const apiAuthorized = async () => {
 };
 
 export const apiLoginKey = "login";
+/**
+ * Logs in user with mobile and password
+ *
+ * @param mobile - Mobile number
+ * @param password - Password
+ * @returns
+ */
 export const apiLogin = async (mobile: string, password: string) => {
   try {
     const res = await api.post("/login", {
