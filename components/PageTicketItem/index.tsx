@@ -2,13 +2,14 @@ import { apiTicketX, apiTicketXKey } from "@/helpers/apiRoutes";
 import { ModelTicket } from "@/types/apiTypes";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../_shared/Button";
 import { getTicketStatus } from "@/helpers/ticketTools";
 import { IoSend } from "react-icons/io5";
 import { BiImageAdd } from "react-icons/bi";
 import { HEADER_HEIGHT } from "../Header";
 import Message from "./Message";
+import UploadImage from "./UploadImage";
 
 type Props = {};
 
@@ -16,16 +17,38 @@ const PageTicketItem = (p: Props) => {
   const router = useRouter();
   const { ticketId } = router.query;
 
+  const [valImage, setValImage] = useState<File[]>([]);
+  const [imgPreviewUrl, setImgPreviewUrl] = useState<string[]>([]);
+
+  const refUploadedImageId = useRef<string[]>([]);
+  const elInputImage = useRef<HTMLInputElement>(null);
+
   const {
     data: dataTicket,
     error: errorTicket,
-    isLoading: isLoadingTicket,
     refetch: refetchTicket,
   } = useQuery({
     queryKey: [apiTicketXKey],
     queryFn: () => apiTicketX(ticketId as string),
     enabled: false,
   });
+
+  const pushImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+
+    const files = Array.from(e.target.files);
+    files.map((file) => {
+      {
+        setValImage((prev) => [...prev, file]);
+        setImgPreviewUrl((prev) => [...prev, URL.createObjectURL(file)]);
+      }
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setValImage((prev) => prev.filter((_, i) => i !== index));
+    setImgPreviewUrl((prev) => prev.filter((_, i) => i !== index));
+  };
 
   useEffect(() => {
     if (ticketId) refetchTicket();
@@ -79,8 +102,19 @@ const PageTicketItem = (p: Props) => {
           }
           <div className=" w-full mt-4 mb-2 flex">
             <div className="p-3 flex flex-col items-center">
-              <IoSend className="text-3xl " />
-              <BiImageAdd className="text-3xl mt-4" />
+              <IoSend className="text-3xl cursor-pointer" />
+              <BiImageAdd
+                onClick={() => elInputImage.current?.click()}
+                className="text-3xl mt-4 cursor-pointer"
+              />
+              <input
+                ref={elInputImage}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={pushImages}
+                className="hidden"
+              />
             </div>
 
             <textarea
@@ -89,11 +123,20 @@ const PageTicketItem = (p: Props) => {
               placeholder="پیام خود را اینجا بنویسید..."
             />
           </div>
+
+          {
+            // * Images
+          }
+          <div className="w-full gap-4 flex ">
+            {imgPreviewUrl.map((url, index) => (
+              <UploadImage url={url} index={index} onPop={removeImage} />
+            ))}
+          </div>
         </div>
       ) : (
         // * Error
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center ">
           <p className="text-xl text-center">خطایی رخ داده است</p>
           <Button onClick={() => refetchTicket()}>تلاش دوباره</Button>
         </div>
