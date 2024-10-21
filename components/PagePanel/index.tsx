@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import Button from "../_shared/Button";
 import TicketCard from "./TicketCard";
 import ModalNewTicket from "../ModalNewTicket";
+import { FaTicketAlt } from "react-icons/fa";
 
 type Props = {};
 
 const PagePanel = (p: Props) => {
-  const { tickets, refetchTicket, logout, authedIn } = useAppContext();
+  const { tickets, refetchTicket, authedIn } = useAppContext();
 
   const [show, setShow] = useState(false);
   const [showNewModal, setShowNewModal] = useState(false);
@@ -24,22 +25,12 @@ const PagePanel = (p: Props) => {
 
   return (
     <div
-      className={`w-full max-w-4xl mx-auto transition ease duration-300
+      className={`w-full max-w-4xl px-4 mx-auto transition ease duration-300
             ${show ? "opacity-100" : "opacity-0 translate-y-8"}`}
     >
-      {
-        // * Header
-      }
-      <div className="flex items-center gap-2 px-4">
-        <p className="text-3xl flex-1">پنل تیکت ها</p>
-        <Button className="min-w-32" onClick={() => setShowNewModal(true)}>
-          تیکت جدید
-        </Button>
-        <Button className="min-w-32" onClick={logout}>
-          خروج از جساب
-        </Button>
-      </div>
-
+      <Button className="min-w-full h-20" onClick={() => setShowNewModal(true)}>
+        تیکت جدید
+      </Button>
       {
         // * Cards
       }

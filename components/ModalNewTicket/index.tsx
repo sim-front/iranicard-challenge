@@ -130,7 +130,7 @@ const ModelNewTicket = (p: Props) => {
               {isNewTicketLoading || isNewMediaLoading ? "🤚" : " ثبت"}
             </Button>
             <Button
-              className="min-w-32"
+              className="min-w-20"
               onClick={() => {
                 p.pop();
               }}

@@ -7,6 +7,7 @@ import Button from "../_shared/Button";
 import { getTicketStatus } from "@/helpers/ticketTools";
 import { IoSend } from "react-icons/io5";
 import { BiImageAdd } from "react-icons/bi";
+import { HEADER_HEIGHT } from "../Header";
 
 type Props = {};
 
@@ -31,8 +32,11 @@ const PageTicketItem = (p: Props) => {
 
   return (
     <div
-      className={`w-full h-screen flex flex-col bg-slate-700
+      className={`w-full  flex flex-col bg-slate-700
                 items-center justify-center px-4`}
+      style={{
+        height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+      }}
     >
       {!dataTicket && !errorTicket ? (
         // * Loading
