@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import Button from "../_shared/Button";
 import { useAppContext } from "@/helpers/_AppContext";
+import { fileURLToPath } from "url";
 
 type Props = {
   pop: () => void;
@@ -20,7 +21,9 @@ const ModelNewTicket = (p: Props) => {
   const [valContent, setValContent] = useState("");
   const [valImage, setValImage] = useState<File | undefined>(undefined);
   const [imgPreviewUrl, setImgPreviewUrl] = useState<string | undefined>();
+
   const refImageId = useRef<string | undefined>();
+  const elInputImage = useRef<HTMLInputElement>(null);
 
   const { refetch: refetchNewTicket, isLoading: isNewTicketLoading } = useQuery(
     {
@@ -74,13 +77,31 @@ const ModelNewTicket = (p: Props) => {
           <p className={`text-2xl mb-12 text-center`}>تیکت جدید</p>
 
           <input
-            className="mb-4"
+            ref={elInputImage}
+            className="mb-4 hidden"
             accept="image/*"
             type="file"
             onChange={(e) => setValImage(e.target.files?.[0])}
           />
 
-          <img className="w-full" src={imgPreviewUrl} />
+          <div
+            onClick={() => elInputImage.current?.click()}
+            className={`w-full h-40 mb-8 p-2 rounded bg-slate-700 flex overflow-hidden 
+                items-center justify-center pointer cursor-pointer hover:bg-slate-600 
+                transition ease duration-200`}
+          >
+            <p className="flex-1 text-center">
+              برای
+              {imgPreviewUrl ? " تغییر " : " انتخاب تصویر "}
+              کلیک کنید
+            </p>
+            <img
+              className={`h-full aspect-square bg-slate-900 rounded-xl overflow-hidden ${
+                !imgPreviewUrl && "hidden"
+              }`}
+              src={imgPreviewUrl}
+            />
+          </div>
 
           <p className="w-full mb-2">موضوع</p>
           <input
