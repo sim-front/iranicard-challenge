@@ -14,7 +14,7 @@ type Props = {
   pop: () => void;
 };
 
-const ModelNewTicket = (p: Props) => {
+const ModalNewTicket = (p: Props) => {
   const { refetchTicket } = useAppContext();
 
   const [valSubject, setValSubject] = useState("");
@@ -28,7 +28,8 @@ const ModelNewTicket = (p: Props) => {
   const { refetch: refetchNewTicket, isLoading: isNewTicketLoading } = useQuery(
     {
       queryKey: [apiNewTicketKey],
-      queryFn: () => apiNewTicket(valSubject, valContent, refImageId.current),
+      queryFn: () =>
+        apiNewTicket(valSubject, valContent, [refImageId.current as string]),
       enabled: false,
     }
   );
@@ -45,7 +46,6 @@ const ModelNewTicket = (p: Props) => {
     try {
       if (valImage) {
         await refetchNewMedia().then((res: any) => {
-          console.log(11111, res.data?.data?.data);
           refImageId.current = res.data?.data?.data?.[0]?._id;
         });
 
@@ -145,4 +145,4 @@ const ModelNewTicket = (p: Props) => {
   );
 };
 
-export default ModelNewTicket;
+export default ModalNewTicket;

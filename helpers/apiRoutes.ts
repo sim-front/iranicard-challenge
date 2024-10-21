@@ -90,14 +90,32 @@ export const apiNewTicket = async (
   // department_id: string,
   subject: string,
   content: string,
-  media_ids?: string
+  media_ids?: string[]
 ) => {
   try {
     const res = await api.post("ticket", {
       department_id: "60affd86b04e951f303e437b",
       subject,
       content,
-      media_ids: [media_ids],
+      media_ids: media_ids,
+    });
+    return res;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+export const apiAnswerTicketKey = "answer-ticket";
+export const apiAnswerTicket = async (
+  ticketId: string,
+  content: string,
+  media_ids?: string[]
+) => {
+  try {
+    const res = await api.post(`ticket/${ticketId}/answer`, {
+      content,
+      media_ids: media_ids,
     });
     return res;
   } catch (e) {

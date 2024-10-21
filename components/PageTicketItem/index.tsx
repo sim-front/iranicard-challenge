@@ -1,4 +1,11 @@
-import { apiTicketX, apiTicketXKey } from "@/helpers/apiRoutes";
+import {
+  apiAnswerTicket,
+  apiAnswerTicketKey,
+  apiMedia,
+  apiMediaKey,
+  apiTicketX,
+  apiTicketXKey,
+} from "@/helpers/apiRoutes";
 import { ModelTicket } from "@/types/apiTypes";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
@@ -17,6 +24,7 @@ const PageTicketItem = (p: Props) => {
   const router = useRouter();
   const { ticketId } = router.query;
 
+  const [valContent, setValContent] = useState("");
   const [valImage, setValImage] = useState<File[]>([]);
   const [imgPreviewUrl, setImgPreviewUrl] = useState<string[]>([]);
 
@@ -32,6 +40,52 @@ const PageTicketItem = (p: Props) => {
     queryFn: () => apiTicketX(ticketId as string),
     enabled: false,
   });
+
+  const {
+    error: errorAnswer, // TODO handle errors
+    refetch: refetchAnswer,
+  } = useQuery({
+    queryKey: [apiAnswerTicketKey],
+    queryFn: () =>
+      apiAnswerTicket(
+        ticketId as string,
+        valContent,
+        refUploadedImageId.current
+      ),
+    enabled: false,
+  });
+
+  const { refetch: refetchNewMedia } = useQuery({
+    queryKey: [apiMediaKey],
+    queryFn: () => apiMedia(valImage),
+    enabled: false,
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!valContent) return; // TODO show visual indication
+
+    if (valImage.length)
+      refetchNewMedia().then((res) => {
+        refUploadedImageId.current = res.data?.data?.data?.map(
+          (i: any) => i._id
+        );
+        sendMessage();
+      });
+    else sendMessage();
+  };
+
+  const sendMessage = () => {
+    refetchAnswer().then(() => {
+      setValContent("");
+      setImgPreviewUrl([]);
+      setValImage([]);
+      refUploadedImageId.current = [];
+
+      refetchTicket();
+    });
+  };
 
   const pushImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -90,7 +144,7 @@ const PageTicketItem = (p: Props) => {
           }
           <div
             className="w-full p-4 flex flex-col gap-4 border border-solid border-slate-900 
-                        rounded-2xl bg-slate-800/50 flex-1"
+                        rounded-2xl bg-slate-800/50 flex-1 overflow-y-auto"
           >
             {dataTicket.messages.map((message, index) => (
               <Message key={index} message={message} />
@@ -102,7 +156,10 @@ const PageTicketItem = (p: Props) => {
           }
           <div className=" w-full mt-4 mb-2 flex">
             <div className="p-3 flex flex-col items-center">
-              <IoSend className="text-3xl cursor-pointer" />
+              <IoSend
+                onClick={handleSubmit}
+                className="text-3xl cursor-pointer"
+              />
               <BiImageAdd
                 onClick={() => elInputImage.current?.click()}
                 className="text-3xl mt-4 cursor-pointer"
@@ -121,6 +178,8 @@ const PageTicketItem = (p: Props) => {
               className="flex-1 p-4 border border-solid border-slate-900 
                         rounded-2xl bg-slate-800 max-h-60 min-h-20"
               placeholder="پیام خود را اینجا بنویسید..."
+              value={valContent}
+              onChange={(e) => setValContent(e.target.value)}
             />
           </div>
 
