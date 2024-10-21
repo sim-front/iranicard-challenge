@@ -9,7 +9,7 @@ import { IoSend } from "react-icons/io5";
 import { BiImageAdd } from "react-icons/bi";
 import { HEADER_HEIGHT } from "../Header";
 import Message from "./Message";
-import UploadImage from "./UploadImage";
+import ToUploadImage from "./ToUploadImage";
 
 type Props = {};
 
@@ -129,7 +129,7 @@ const PageTicketItem = (p: Props) => {
           }
           <div className="w-full gap-4 flex ">
             {imgPreviewUrl.map((url, index) => (
-              <UploadImage url={url} index={index} onPop={removeImage} />
+              <ToUploadImage url={url} index={index} onPop={removeImage} />
             ))}
           </div>
         </div>

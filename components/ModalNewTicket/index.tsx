@@ -35,7 +35,7 @@ const ModelNewTicket = (p: Props) => {
 
   const { refetch: refetchNewMedia, isLoading: isNewMediaLoading } = useQuery({
     queryKey: [apiMediaKey],
-    queryFn: () => apiMedia(valImage as File),
+    queryFn: () => apiMedia([valImage as File]),
     enabled: false,
   });
 

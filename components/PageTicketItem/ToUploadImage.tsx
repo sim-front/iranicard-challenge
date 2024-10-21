@@ -4,7 +4,7 @@ type Props = {
   onPop: (index: number) => void;
 };
 
-const UploadImage = (p: Props) => {
+const ToUploadImage = (p: Props) => {
   return (
     <div className="h-20 bg-red-800 rounded-xl">
       <img
@@ -17,4 +17,4 @@ const UploadImage = (p: Props) => {
   );
 };
 
-export default UploadImage;
+export default ToUploadImage;

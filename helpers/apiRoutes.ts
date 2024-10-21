@@ -64,10 +64,12 @@ export const apiCapchaVerification = async (code: string) => {
 };
 
 export const apiMediaKey = "media";
-export const apiMedia = async (image: File) => {
+export const apiMedia = async (images: File[]) => {
   try {
     const formData = new FormData();
-    formData.append("media[0]", image);
+    images.forEach((image, index) => {
+      formData.append(`media[${index}]`, image);
+    });
     formData.append("access_type", "private");
     formData.append("section_type", "ticket");
 
