@@ -8,6 +8,7 @@ import { getTicketStatus } from "@/helpers/ticketTools";
 import { IoSend } from "react-icons/io5";
 import { BiImageAdd } from "react-icons/bi";
 import { HEADER_HEIGHT } from "../Header";
+import Message from "./Message";
 
 type Props = {};
 
@@ -32,7 +33,7 @@ const PageTicketItem = (p: Props) => {
 
   return (
     <div
-      className={`w-full  flex flex-col bg-slate-700
+      className={`w-full flex flex-col max-w-[1000px] mx-auto
                 items-center justify-center px-4`}
       style={{
         height: `calc(100vh - ${HEADER_HEIGHT}px)`,
@@ -67,7 +68,11 @@ const PageTicketItem = (p: Props) => {
           <div
             className="w-full p-4 flex flex-col gap-4 border border-solid border-slate-900 
                         rounded-2xl bg-slate-800/50 flex-1"
-          ></div>
+          >
+            {dataTicket.messages.map((message, index) => (
+              <Message key={index} message={message} />
+            ))}
+          </div>
 
           {
             // * Prompt bar

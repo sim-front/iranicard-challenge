@@ -22,6 +22,7 @@ type _AppContextProps = {
   tickets: ModelTicket[] | undefined;
   refetchTicket: () => void;
   logout: () => void;
+  decideShowingPage: (data: any) => void;
 };
 
 export const _AppContext = createContext({} as _AppContextProps);
@@ -83,14 +84,13 @@ export const ProviderApp = (p: Props) => {
     await refetchLogout()
       // TODO handle possible errors
       .then((res) => {
-        console.log(11111, "LOGOUT", res);
-        router.push("/login");
+        decideShowingPage(null);
       });
   };
 
   useEffect(() => {
     decideShowingPage(authData);
-  }, [isAuthLoading]);
+  }, [authData]);
 
   useEffect(() => {
     ticketData && setTickets(ticketData);
@@ -103,6 +103,7 @@ export const ProviderApp = (p: Props) => {
         tickets,
         refetchTicket,
         logout,
+        decideShowingPage,
       }}
     >
       {p.children}

@@ -16,7 +16,7 @@ const SHOW_DURATION = 2000;
 const HIDE_DURATION = 700;
 
 const PageLogin = () => {
-  const { authedIn } = useAppContext();
+  const { authedIn, decideShowingPage } = useAppContext();
   const router = useRouter();
 
   const [show, setShow] = useState(false);
@@ -54,7 +54,7 @@ const PageLogin = () => {
   const moveToPanel = () => {
     setShow(false);
     refTimeoutMoveToPanel.current = setTimeout(() => {
-      router.push("/panel");
+      decideShowingPage(true);
     }, HIDE_DURATION);
   };
 

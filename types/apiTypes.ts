@@ -14,7 +14,7 @@ export type ModelTicket = {
     first_name: string;
     last_name: string;
   };
-  messages: Message[];
+  messages: ModelMessage[];
   created_ago: string;
   created_at: string;
 };
@@ -26,14 +26,14 @@ export type Media = {
   thumbnail_url: string;
 };
 
-export type Message = {
+export type ModelMessage = {
   content: string;
   media_ids: string[];
   ip_address: string;
   medias: Media[];
   created_at: string;
   created_ago: string;
-  send_type: string;
+  send_type: "user-to-operator" | "operator-to-user";
   score: number | null;
   deleted_at: string | null;
   deleted_by: string | null;
