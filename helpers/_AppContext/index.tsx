@@ -16,6 +16,8 @@ import {
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
 import { ModelTicket } from "@/types/apiTypes";
+import { isMinutePassed } from "../ticketTools";
+import { useNotifier } from "../hooks/useNotifier";
 
 type _AppContextProps = {
   authedIn: boolean | null;
@@ -23,6 +25,7 @@ type _AppContextProps = {
   refetchTicket: () => void;
   logout: () => void;
   decideShowingPage: (data: any) => void;
+  checkIfShouldBeNotified: (ticket: ModelTicket) => void;
 };
 
 export const _AppContext = createContext({} as _AppContextProps);
@@ -33,6 +36,7 @@ type Props = {
 
 export const ProviderApp = (p: Props) => {
   const router = useRouter();
+  const notifier = useNotifier();
 
   const [authedIn, setAuthedIn] = useState<boolean | null>(null);
   const [tickets, setTickets] = useState<ModelTicket[] | undefined>(undefined);
@@ -88,12 +92,25 @@ export const ProviderApp = (p: Props) => {
       });
   };
 
+  const checkIfShouldBeNotified = (ticket: ModelTicket) => {
+    ticket.messages.forEach((mes) => {
+      if (mes.send_type === "user-to-operator") {
+        if (!isMinutePassed(mes.created_at)) {
+          notifier.pushTimer(mes.content);
+        }
+      }
+    });
+  };
+
   useEffect(() => {
     decideShowingPage(authData);
   }, [authData]);
 
   useEffect(() => {
-    ticketData && setTickets(ticketData);
+    if (ticketData) {
+      setTickets(ticketData);
+      ticketData.forEach((ticket) => checkIfShouldBeNotified(ticket));
+    }
   }, [ticketData]);
 
   return (
@@ -104,6 +121,7 @@ export const ProviderApp = (p: Props) => {
         refetchTicket,
         logout,
         decideShowingPage,
+        checkIfShouldBeNotified,
       }}
     >
       {p.children}

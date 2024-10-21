@@ -11,3 +11,16 @@ const TicketStatuses: { [key: string]: string } = {
  */
 export const getTicketStatus = (status: string) =>
   TicketStatuses[status] ?? status;
+
+/**
+ * Check if a ticket was created in the last minute.
+ *
+ * @param createdAt Ticket creation date
+ * @returns if more than a minute has passed
+ */
+export const isMinutePassed = (createdAt: string): boolean => {
+  const createdAtDate = new Date(createdAt);
+  const now = new Date();
+  const diffInMinutes = (now.getTime() - createdAtDate.getTime()) / 1000 / 60;
+  return diffInMinutes >= 1;
+};

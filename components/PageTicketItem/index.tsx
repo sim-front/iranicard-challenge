@@ -17,10 +17,12 @@ import { BiImageAdd } from "react-icons/bi";
 import { HEADER_HEIGHT } from "../Header";
 import Message from "./Message";
 import ToUploadImage from "./ToUploadImage";
+import { useAppContext } from "@/helpers/_AppContext";
 
 type Props = {};
 
 const PageTicketItem = (p: Props) => {
+  const { checkIfShouldBeNotified } = useAppContext();
   const router = useRouter();
   const { ticketId } = router.query;
 
@@ -107,6 +109,10 @@ const PageTicketItem = (p: Props) => {
   useEffect(() => {
     if (ticketId) refetchTicket();
   }, [ticketId]);
+
+  useEffect(() => {
+    if (dataTicket) checkIfShouldBeNotified(dataTicket);
+  }, [dataTicket]);
 
   return (
     <div
