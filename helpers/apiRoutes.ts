@@ -118,3 +118,16 @@ export const apiAllTickets = async (): Promise<ModelTicket[] | undefined> => {
     throw e;
   }
 };
+
+export const apiTicketXKey = "ticket-x";
+export const apiTicketX = async (
+  ticketId: string
+): Promise<ModelTicket | undefined> => {
+  try {
+    const res = await api.get(`ticket/${ticketId}`, {});
+    return res.data?.data;
+  } catch (e: any) {
+    console.error(e?.response ?? e);
+    throw e;
+  }
+};

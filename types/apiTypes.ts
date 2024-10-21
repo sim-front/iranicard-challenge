@@ -14,6 +14,27 @@ export type ModelTicket = {
     first_name: string;
     last_name: string;
   };
+  messages: Message[];
   created_ago: string;
   created_at: string;
+};
+
+export type Media = {
+  orginal_name: string;
+  mime: string;
+  url: string;
+  thumbnail_url: string;
+};
+
+export type Message = {
+  content: string;
+  media_ids: string[];
+  ip_address: string;
+  medias: Media[];
+  created_at: string;
+  created_ago: string;
+  send_type: string;
+  score: number | null;
+  deleted_at: string | null;
+  deleted_by: string | null;
 };
